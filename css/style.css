@@ -1,0 +1,197 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  font-family: 'Tahoma', sans-serif;
+}
+
+#map {
+  flex: 1;
+  height: 100vh;
+}
+
+.tytul-mapy {
+  background: white;
+  padding: 8px 14px;
+  margin: 10px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: Tahoma, sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+}
+
+.panel-boczny {
+  width: 360px;
+  height: 100vh;
+  background: white;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 12px;
+  gap: 12px;
+}
+
+.sekcja-panelu {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.sekcja-panelu h3 {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  color: #222;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.suwak-kontener {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.suwak-kontener input[type="range"] {
+  width: 100%;
+}
+
+#nazwa-podkladu, #nazwa-zabudowa, #nazwa-komunikacja, #nazwa-zdjecia {
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+}
+
+.suwak-z-przyciskami {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.suwak-z-przyciskami input[type="range"] {
+  flex: 1;
+}
+
+.suwak-z-przyciskami button {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  color: #333;
+  transition: background 0.2s, border-color 0.2s;
+  padding: 0;
+}
+
+.suwak-z-przyciskami button:hover {
+  background: #e3f2fd;
+  border-color: #2196f3;
+  color: #1565c0;
+}
+
+.suwak-z-przyciskami button:active {
+  background: #bbdefb;
+}
+
+.print-button {
+  background-color: white;
+  width: 30px;
+  height: 30px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+  color: black;
+}
+
+.print-button:hover {
+  background-color: #f4f4f4;
+}
+
+.leaflet-bottom.leaflet-left {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-end !important; 
+  gap: 8px;                         
+  padding-left: 10px !important;    
+  padding-bottom: 10px !important;  
+}
+
+.leaflet-bottom.leaflet-left .leaflet-control {
+  margin: 0 !important;
+}
+
+.leaflet-bottom.leaflet-left .leaflet-control-scale {
+  order: 1 !important;
+}
+
+.wspolrzedne-myszki {
+  order: 2 !important;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #333;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  height: 11px; 
+}
+
+/* Styl dla przycisków włączania/wyłączania widoczności */
+.suwak-z-przyciskami button.btn-toggle {
+  background: #e8f5e9;
+  border-color: #4caf50;
+  font-size: 13px;
+}
+
+.suwak-z-przyciskami button.btn-toggle:hover {
+  background: #c8e6c9;
+  border-color: #388e3c;
+}
+
+.suwak-z-przyciskami button.btn-toggle.inactive {
+  background: #ffebee;
+  border-color: #e57373;
+  opacity: 0.6;
+}
+
+.suwak-z-przyciskami button.btn-toggle.inactive:hover {
+  opacity: 1;
+}
+
+/* Zwiększenie domyślnego limitu szerokości dymku w Leaflecie */
+.leaflet-popup {
+  max-width: none !important;
+}
+
+.leaflet-popup-content-wrapper {
+  padding: 8px;
+}
+
+.leaflet-popup-content {
+  width: auto !important;
+  max-width: 700px !important; /* Tutaj ustawiasz maksymalną szerokość dymka, np. 700px */
+  margin: 10px 14px;
+}
+}

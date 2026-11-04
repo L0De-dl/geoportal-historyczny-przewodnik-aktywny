@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <title>Geoportal Historyczny Gołańczy</title>
+  <link rel="icon" type="image/png" href="assets/icon/logo-main.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure-path/leaflet-measure-path.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure-path/1.5.0/leaflet-measure-path.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <div class="panel-boczny">
+<br>
+    <div class="sekcja-panelu suwak-kontener">
+      <h3>Wybór podkładu mapowego</h3>
+      <div class="suwak-z-przyciskami">
+        <button id="btn-toggle-podklad" class="btn-toggle active" title="Włącz/Wyłącz widoczność podkładu">👁️</button>
+        <button id="btn-suwak-lewy" title="Poprzednia mapa">◀</button>
+        <input type="range" id="suwak-czasu" min="0" max="26" value="26" step="1">
+        <button id="btn-suwak-prawy" title="Następna mapa">▶</button>
+      </div>
+      <div id="nazwa-podkladu">Wczytywanie...</div>
+    </div>
+    <br>
+    <div class="sekcja-panelu suwak-kontener">
+      <h3>Wybór warstwy - zabudowa</h3>
+      <div class="suwak-z-przyciskami">
+        <button id="btn-toggle-zabudowa" class="btn-toggle active" title="Włącz/Wyłącz widoczność zabudowy">👁️</button>
+        <button id="btn-zabudowa-lewy" title="Poprzedni rok">◀</button>
+        <input type="range" id="suwak-zabudowa" min="0" max="26" value="26" step="1">
+        <button id="btn-zabudowa-prawy" title="Następny rok">▶</button>
+      </div>
+      <div id="nazwa-zabudowa">Brak / Wczytywanie...</div>
+    </div>
+    <br>
+    <div class="sekcja-panelu suwak-kontener">
+      <h3>Wybór warstwy - komunikacja</h3>
+      <div class="suwak-z-przyciskami">
+        <button id="btn-toggle-komunikacja" class="btn-toggle active" title="Włącz/Wyłącz widoczność komunikacji">👁️</button>
+        <button id="btn-komunikacja-lewy" title="Poprzedni rok">◀</button>
+        <input type="range" id="suwak-komunikacja" min="0" max="26" value="26" step="1">
+        <button id="btn-komunikacja-prawy" title="Następny rok">▶</button>
+      </div>
+      <div id="nazwa-komunikacja">Brak / Wczytywanie...</div>
+    </div>
+    <br>
+<div class="sekcja-panelu suwak-kontener">
+  <h3>Wybór warstwy - zdjęcia</h3>
+  <div class="suwak-z-przyciskami">
+    <button id="btn-toggle-zdjecia" class="btn-toggle active" title="Włącz/Wyłącz widoczność zdjęć">👁️</button>
+    <button id="btn-zdjecia-lewy" title="Poprzedni rok">◀</button>
+    <input type="range" id="suwak-zdjecia" min="1890" max="2026" value="2026" step="1">
+    <button id="btn-zdjecia-prawy" title="Następny rok">▶</button>
+  </div>
+  <div id="nazwa-zdjecia">Brak / Wczytywanie...</div>
+</div>
+  </div>
+
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure-path/1.5.0/leaflet-measure-path.min.js"></script>
+  <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

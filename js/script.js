@@ -3,6 +3,14 @@ const map = L.map('map', {
   zoomSnap: 0.5,
   preferCanvas: true
 }).setView([52.95173327595248, 17.300419185219326], 13.5);
+window.geoportalMap = map;
+
+map.on('popupopen', function() {
+  window.dispatchEvent(new CustomEvent('geoportal:photo-opened'));
+});
+window.addEventListener('geoportal:close-popup', function() {
+  map.closePopup();
+});
 
 const PrintControl = L.Control.extend({
     options: { position: 'topleft' },
@@ -178,6 +186,9 @@ document.getElementById('nazwa-podkladu').textContent = "Mapa z 2026 roku";
 // Przywrócenie narzędzi rysowania i pomiaru (Leaflet Draw)
 const drawnElements = new L.FeatureGroup();
 map.addLayer(drawnElements);
+window.addEventListener('geoportal:remove-onboarding-marker', function(e) {
+  drawnElements.removeLayer(e.detail.layer);
+});
 
 const drawControl = new L.Control.Draw({
   edit: {
@@ -251,6 +262,9 @@ map.on(L.Draw.Event.CREATED, function (e) {
   const layer = e.layer;
   drawnElements.addLayer(layer);
   updateMeasurements(layer, e.layerType);
+  window.dispatchEvent(new CustomEvent('geoportal:marker-created', {
+    detail: { layerType: e.layerType, layer }
+  }));
 });
 
 map.on(L.Draw.Event.EDITED, function (e) {
@@ -287,6 +301,7 @@ function exportMap() {
             link.click();
 
             map.options.fadeAnimation = starePrzesuniecie;
+            window.dispatchEvent(new CustomEvent('geoportal:map-exported'));
         }).catch(function(error) {
             console.error("Błąd podczas eksportu mapy:", error);
             alert("Nie udało się wyeksportować mapy. Sprawdź konsolę przeglądarki.");
@@ -606,14 +621,21 @@ wczytajZdjeciaDlaRoku(2026);
 
 // --- SYSTEM LOGOWANIA AKTYWNOŚCI UŻYTKOWNIKA DO CSV ---
 
-const startTime = performance.now();
+let startTime = performance.now();
 let lastClickTime = startTime;
 const userLogs = [];
+
+window.addEventListener('geoportal:onboarding-finished', function() {
+  startTime = performance.now();
+  lastClickTime = startTime;
+});
 
 // Obiekt do zliczania kliknięć w poszczególne elementy
 const elementClickCounts = {};
 
 function logEvent(actionType, targetName, additionalInfo = '') {
+  if (window.geoportalOnboardingActive || window.geoportalOnboardingRestoring) return;
+
   const now = performance.now();
   
   const timeFromStart = ((now - startTime) / 1000).toFixed(2).replace('.', ',');

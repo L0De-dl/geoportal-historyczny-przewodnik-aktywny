@@ -3,13 +3,9 @@ const map = L.map('map', {
   zoomSnap: 0.5,
   preferCanvas: true
 }).setView([52.95173327595248, 17.300419185219326], 13.5);
-window.geoportalMap = map;
 
-map.on('popupopen', function() {
-  window.dispatchEvent(new CustomEvent('geoportal:photo-opened'));
-});
-window.addEventListener('geoportal:close-popup', function() {
-  map.closePopup();
+map.on('move zoom', function () {
+  document.dispatchEvent(new Event('geoportal:map-view-change'));
 });
 
 const PrintControl = L.Control.extend({
@@ -186,9 +182,6 @@ document.getElementById('nazwa-podkladu').textContent = "Mapa z 2026 roku";
 // Przywrócenie narzędzi rysowania i pomiaru (Leaflet Draw)
 const drawnElements = new L.FeatureGroup();
 map.addLayer(drawnElements);
-window.addEventListener('geoportal:remove-onboarding-marker', function(e) {
-  drawnElements.removeLayer(e.detail.layer);
-});
 
 const drawControl = new L.Control.Draw({
   edit: {
@@ -262,13 +255,55 @@ map.on(L.Draw.Event.CREATED, function (e) {
   const layer = e.layer;
   drawnElements.addLayer(layer);
   updateMeasurements(layer, e.layerType);
-  window.dispatchEvent(new CustomEvent('geoportal:marker-created', {
-    detail: { layerType: e.layerType, layer }
+  const shapeElement = layer.getElement();
+  if (shapeElement) shapeElement.classList.add('geoportal-guide-shape');
+  document.dispatchEvent(new CustomEvent('geoportal:draw-created', {
+    detail: { layerType: e.layerType, layer: layer }
   }));
 });
 
+map.on(L.Draw.Event.DRAWSTART, function () {
+  document.dispatchEvent(new CustomEvent('geoportal:draw-start'));
+});
+
+document.addEventListener('geoportal:guide-prepare-draw', function () {
+  map.closePopup();
+});
+
+map.on(L.Draw.Event.EDITSTART, function () {
+  document.dispatchEvent(new CustomEvent('geoportal:draw-edit-start', {
+    detail: { map: map, layers: drawnElements.getLayers() }
+  }));
+});
+
+map.on(L.Draw.Event.EDITSTOP, function () {
+  document.dispatchEvent(new CustomEvent('geoportal:draw-edit-stop'));
+});
+
+[L.Draw.Event.EDITMOVE, L.Draw.Event.EDITVERTEX, L.Draw.Event.EDITRESIZE].forEach(function (eventName) {
+  map.on(eventName, function () {
+    document.dispatchEvent(new CustomEvent('geoportal:draw-edit-change', {
+      detail: { map: map, layers: drawnElements.getLayers() }
+    }));
+  });
+});
+
+map.on(L.Draw.Event.DELETESTART, function () {
+  document.dispatchEvent(new CustomEvent('geoportal:draw-delete-start', {
+    detail: { map: map, layers: drawnElements.getLayers() }
+  }));
+});
+
+map.on(L.Draw.Event.DELETESTOP, function () {
+  document.dispatchEvent(new CustomEvent('geoportal:draw-delete-stop'));
+});
+
 map.on(L.Draw.Event.EDITED, function (e) {
+  let editedCount = 0;
+  const editedLayers = [];
   e.layers.eachLayer(function (layer) {
+    editedCount++;
+    editedLayers.push(layer);
     let type = 'marker';
     if (layer instanceof L.Polyline && !(layer instanceof L.Polygon)) type = 'polyline';
     else if (layer instanceof L.Polygon) type = 'polygon';
@@ -276,6 +311,21 @@ map.on(L.Draw.Event.EDITED, function (e) {
     
     updateMeasurements(layer, type);
   });
+  document.dispatchEvent(new CustomEvent('geoportal:draw-edited', {
+    detail: { count: editedCount, layers: editedLayers }
+  }));
+});
+
+map.on(L.Draw.Event.DELETED, function (e) {
+  let deletedCount = 0;
+  const deletedLayers = [];
+  e.layers.eachLayer(function (layer) {
+    deletedCount++;
+    deletedLayers.push(layer);
+  });
+  document.dispatchEvent(new CustomEvent('geoportal:draw-deleted', {
+    detail: { count: deletedCount, layers: deletedLayers }
+  }));
 });
 
 function exportMap() {
@@ -299,9 +349,11 @@ function exportMap() {
             link.download = "mapa-golancza.png";
             link.href = canvas.toDataURL("image/png");
             link.click();
+            document.dispatchEvent(new CustomEvent('geoportal:map-exported', {
+              detail: { filename: link.download }
+            }));
 
             map.options.fadeAnimation = starePrzesuniecie;
-            window.dispatchEvent(new CustomEvent('geoportal:map-exported'));
         }).catch(function(error) {
             console.error("Błąd podczas eksportu mapy:", error);
             alert("Nie udało się wyeksportować mapy. Sprawdź konsolę przeglądarki.");
@@ -558,6 +610,12 @@ function wczytajZdjeciaDlaRoku(rok) {
 
     bazyZdjecDlaLat[rok].forEach(item => {
       const marker = L.marker([item.lat, item.lng], { icon: ikonaZdjecia });
+      marker.on('popupopen', function () {
+        document.dispatchEvent(new CustomEvent('geoportal:photo-opened'));
+      });
+      marker.on('popupclose', function () {
+        document.dispatchEvent(new CustomEvent('geoportal:photo-closed'));
+      });
       
 const popupContent = `
   <div style="text-align: center; width: 650px; max-width: 100%;">
@@ -580,6 +638,10 @@ const popupContent = `
   if (!znalezionoMarkerow) {
     document.getElementById('nazwa-zdjecia').textContent = `Brak zdjęć (${rok})`;
   }
+
+  document.dispatchEvent(new CustomEvent('geoportal:photos-loaded', {
+    detail: { year: rok, hasPhotos: znalezionoMarkerow }
+  }));
 }
 
 // Event Listeners: Suwak Zdjęć
@@ -621,21 +683,14 @@ wczytajZdjeciaDlaRoku(2026);
 
 // --- SYSTEM LOGOWANIA AKTYWNOŚCI UŻYTKOWNIKA DO CSV ---
 
-let startTime = performance.now();
+const startTime = performance.now();
 let lastClickTime = startTime;
 const userLogs = [];
-
-window.addEventListener('geoportal:onboarding-finished', function() {
-  startTime = performance.now();
-  lastClickTime = startTime;
-});
 
 // Obiekt do zliczania kliknięć w poszczególne elementy
 const elementClickCounts = {};
 
 function logEvent(actionType, targetName, additionalInfo = '') {
-  if (window.geoportalOnboardingActive || window.geoportalOnboardingRestoring) return;
-
   const now = performance.now();
   
   const timeFromStart = ((now - startTime) / 1000).toFixed(2).replace('.', ',');
@@ -658,6 +713,11 @@ function logEvent(actionType, targetName, additionalInfo = '') {
     szczegoly: additionalInfo
   });
 }
+
+document.addEventListener('geoportal:guide-log', function(e) {
+  const { action, target, details } = e.detail;
+  logEvent(action, target, details);
+});
 
 // 1. Ogólne nasłuchiwanie kliknięć w interfejsie
 document.addEventListener('click', function(e) {

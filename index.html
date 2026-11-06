@@ -9,8 +9,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-measure-path/leaflet-measure-path.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.5/dist/driver.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure-path/1.5.0/leaflet-measure-path.min.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -18,8 +16,10 @@
   <div id="map"></div>
 
   <div class="panel-boczny">
-    <button id="btn-onboarding" class="onboarding-launch" type="button">▶ Uruchom przewodnik</button>
-<br>
+    <div class="panel-header">
+      <span>Eksploruj Gołańcz</span>
+      <button id="btn-przewodnik" type="button" aria-label="Uruchom przewodnik" title="Uruchom przewodnik">?</button>
+    </div>
     <div class="sekcja-panelu suwak-kontener">
       <h3>Wybór podkładu mapowego</h3>
       <div class="suwak-z-przyciskami">
@@ -67,12 +67,9 @@
 
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure-path/1.5.0/leaflet-measure-path.min.js"></script>
   <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
   <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.5/dist/driver.js.iife.js"></script>
   <script src="js/script.js"></script>
   <script src="js/onboarding.js"></script>
 </body>

@@ -441,7 +441,7 @@ function wczytajZabudowę(indeks) {
   }
 }
 
-// Funkcja wczytująca komunikację dla danego indeks
+// Funkcja wczytująca komunikację dla danego indeksu
 function wczytajKomunikację(indeks) {
   if (aktualnaWarstwaKomunikacji) {
     map.removeLayer(aktualnaWarstwaKomunikacji);
@@ -598,6 +598,7 @@ function wczytajZdjeciaDlaRoku(rok) {
 
   const group = L.layerGroup();
   let znalezionoMarkerow = false;
+  const photoLocations = [];
 
   // Sprawdzamy, czy dla podanego roku istnieją zdjęcia w bazie
   if (bazyZdjecDlaLat[rok]) {
@@ -605,11 +606,13 @@ function wczytajZdjeciaDlaRoku(rok) {
       iconUrl: 'assets/icon/icon-01.png',
       iconSize: [32, 32],
       iconAnchor: [16, 32],
-      popupAnchor: [0, -32]
+      popupAnchor: [0, -32],
+      className: 'photo-marker'
     });
 
     bazyZdjecDlaLat[rok].forEach(item => {
       const marker = L.marker([item.lat, item.lng], { icon: ikonaZdjecia });
+      photoLocations.push([item.lat, item.lng]);
       marker.on('popupopen', function () {
         document.dispatchEvent(new CustomEvent('geoportal:photo-opened'));
       });
@@ -640,13 +643,28 @@ const popupContent = `
   }
 
   document.dispatchEvent(new CustomEvent('geoportal:photos-loaded', {
-    detail: { year: rok, hasPhotos: znalezionoMarkerow }
+    detail: {
+      year: rok,
+      hasPhotos: znalezionoMarkerow,
+      locations: photoLocations,
+      availableYears: Object.keys(bazyZdjecDlaLat).map(Number).sort(function (a, b) { return a - b; })
+    }
   }));
 }
 
 // Event Listeners: Suwak Zdjęć
 document.getElementById('suwak-zdjecia').addEventListener('input', function(e) {
   wczytajZdjeciaDlaRoku(parseInt(e.target.value));
+});
+
+document.addEventListener('geoportal:guide-prepare-photo', function() {
+  if (!widoczneZdjecia) {
+    widoczneZdjecia = true;
+    const toggleButton = document.getElementById('btn-toggle-zdjecia');
+    toggleButton.classList.remove('inactive');
+    toggleButton.classList.add('active');
+  }
+  wczytajZdjeciaDlaRoku(parseInt(document.getElementById('suwak-zdjecia').value));
 });
 
 document.getElementById('btn-zdjecia-lewy').addEventListener('click', function() {

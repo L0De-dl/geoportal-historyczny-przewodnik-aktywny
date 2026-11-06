@@ -441,7 +441,7 @@ function wczytajZabudowę(indeks) {
   }
 }
 
-// Funkcja wczytująca komunikację dla danego indeksu
+// Funkcja wczytująca komunikację dla danego indeks
 function wczytajKomunikację(indeks) {
   if (aktualnaWarstwaKomunikacji) {
     map.removeLayer(aktualnaWarstwaKomunikacji);

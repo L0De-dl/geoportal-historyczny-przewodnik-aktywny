@@ -3,51 +3,51 @@
   const steps = [
     {
       title: 'Poznaj historię Gołańczy',
-      description: 'Odkrywaj, jak miasto zmieniało się w czasie, porównując dawne mapy, warstwy i fotografie. Przewodnik pokaże Ci najważniejsze możliwości geoportalu.',
+      description: 'Odkrywaj, jak miasto zmieniało się w czasie. Porównuj dawne mapy, zabudowę, komunikację oraz archiwalne zdjęcia. Ten przewodnik pokaże Ci najważniejsze funkcje.',
       spoken: 'Poznaj historię Gołańczy na interaktywnej mapie.',
-      learning: 'Geoportal łączy mapy z różnych lat z warstwami zabudowy, komunikacji i archiwalnymi zdjęciami.',
+      learning: 'Geoportal łączy mapy historyczne z warstwami zabudowy, dróg i zdjęć z różnych lat.',
       action: 'start'
     },
     {
-      title: 'Porównuj lata na suwakach',
-      description: 'Przesuń dowolny suwak w panelu, aby wybrać inny rok podkładu mapowego, zabudowy, komunikacji lub zdjęć.',
+      title: 'Przełączaj lata na suwakach',
+      description: 'Przesuń dowolny suwak w panelu bocznym, aby zmienić rok podkładu mapowego, zabudowy, komunikacji lub zdjęć.',
       spoken: 'Zmień dowolny suwak roku.',
-      learning: 'Każdy suwak zmienia rok osobnej warstwy. Dzięki temu możesz porównywać mapę, zabudowę, komunikację i zdjęcia z różnych okresów.',
+      learning: 'Każdy suwak steruje osobną warstwą, dzięki czemu możesz zestawiać ze sobą różne okresy historyczne.',
       focus: ['#suwak-czasu', '#suwak-zabudowa', '#suwak-komunikacja', '#suwak-zdjecia'],
       action: 'sliders'
     },
     {
-      title: 'Włączaj i wyłączaj widoczność',
-      description: 'Użyj przycisku oka przy dowolnej warstwie, aby ją ukryć, a następnie ponownie włącz jej widoczność.',
+      title: 'Włączaj i wyłączaj warstwy',
+      description: 'Użyj przycisku oka przy dowolnej warstwie, aby ją ukryć, a potem kliknij go ponownie, aby przywrócić jej widoczność.',
       spoken: 'Ukryj i pokaż ponownie dowolną warstwę.',
-      learning: 'Przycisk oka wyświetla lub ukrywa wybraną warstwę. Ukrycie nie zmienia jej danych ani wybranego roku.',
+      learning: 'Przycisk oka pozwala kontrolować widoczność warstw bez utraty wybranego roku.',
       focus: ['#btn-toggle-podklad', '#btn-toggle-zabudowa', '#btn-toggle-komunikacja', '#btn-toggle-zdjecia'],
       action: 'visibility'
     },
     {
       title: 'Otwórz archiwalne zdjęcie',
-      description: 'Wybierz na suwaku rok, dla którego dostępne są zdjęcia. Pulsujący znacznik pokazuje, gdzie kliknąć, aby otworzyć zdjęcie. Następnie zamknij popup.',
+      description: 'Wybierz rok, w którym dostępne są zdjęcia. Następnie kliknij pulsujący znacznik na mapie, aby otworzyć fotografię, i zamknij jej okno.',
       spoken: 'Otwórz zdjęcie archiwalne i zamknij je.',
-      learning: 'Zdjęcia są przypisane do konkretnych lat i miejsc. Wybierz rok ze zdjęciami, a potem kliknij pulsujący znacznik na mapie.',
+      learning: 'Zdjęcia są przypisane do konkretnych miejsc i lat. Wybierz odpowiedni rok i kliknij znacznik na mapie.',
       focus: '#suwak-zdjecia',
       action: 'photo'
     },
     {
       title: 'Rysuj, mierz i eksportuj',
-      description: 'Narysuj obiekt, zmień jego położenie lub kształt, usuń go i wyeksportuj mapę. Przy każdym etapie dowiesz się, jak działa warstwa rysunków.',
-      spoken: 'Narysuj obiekt na mapie. Potem zmień go, usuń i wyeksportuj widok.',
-      learning: 'Rysunki trafiają na osobną warstwę, więc możesz je edytować i usuwać bez zmiany mapy bazowej. Linia pokazuje przebieg i długość, a poligon — obszar.',
+      description: 'Narysuj obiekt na mapie, edytuj jego kształt, usuń go, a na koniec wyeksportuj widok mapy do pliku graficznego.',
+      spoken: 'Narysuj obiekt na mapie, edytuj go, usuń i wyeksportuj widok.',
+      learning: 'Własne rysunki trafiają na osobną warstwę. Linie pokazują długość, a poligony powierzchnię.',
       focus: ['.leaflet-draw', '.print-button'],
       action: 'draw'
     },
     {
-      title: 'Możesz zaczynać!',
-      description: 'Znasz już najważniejsze narzędzia. Eksploruj Gołańcz we własnym tempie — przewodnik uruchomisz ponownie przyciskiem „?”.',
+      title: 'Wszystko gotowe!',
+      description: 'Znasz już podstawowe narzędzia. Możesz zacząć eksplorować historię Gołańczy. W każdej chwili wrócisz do przewodnika, klikając przycisk „?”.',
       spoken: 'Gotowe! Możesz rozpocząć eksplorację.',
       action: 'finish'
     }
   ];
-
+  
   const backdrop = document.createElement('div');
   backdrop.className = 'guide-backdrop';
   backdrop.setAttribute('aria-hidden', 'true');
@@ -169,21 +169,17 @@
     if (spokenMessage && !card.hidden) speakText(spokenMessage);
   }
 
-  function getSpokenStatus(message) {
+function getSpokenStatus(message) {
     if (message.indexOf('Zadanie wykonane') === 0) return 'Zadanie wykonane. Brawo!';
     if (message.indexOf('Pozostało:') === 0) return null;
-    if (message.indexOf('Tryb edycji:') === 0) return 'Edycja zmienia geometrię obiektu. Przeciągnij jego uchwyt i zapisz zmianę.';
-    if (message.indexOf('Tryb usuwania:') === 0) return 'Wskaż edytowany obiekt. Zapis usuwa go z warstwy, a anuluj zachowuje.';
-    if (message.indexOf('Edycja zapisana.') === 0) return 'Zapis zatwierdził zmianę kształtu lub położenia. Usuń teraz ten sam obiekt.';
-    if (message.indexOf('Usunięto obiekt.') === 0) return 'Obiekt zniknął z warstwy rysunków. Wyeksportuj aktualny widok mapy.';
-    if (message.indexOf('Edycja anulowana') === 0) return 'Edycja anulowana. Spróbuj ponownie.';
-    if (message.indexOf('Najpierw kliknij') === 0) return 'Najpierw edytuj i zapisz obiekt.';
-    if (message.indexOf('Usuwanie anulowane') === 0) return 'Usuwanie anulowane. Spróbuj ponownie.';
-    if (message.indexOf('Nie zapisano') === 0) return 'Brak zapisanych zmian.';
-    if (message.indexOf('Zdjęcie otwarte.') === 0) return 'Zamknij zdjęcie.';
-    if (message.indexOf('Zdjęcia z roku') === 0) return 'Otwórz zdjęcie i zamknij je.';
-    if (message.indexOf('Brak zdjęć dla roku') === 0) return 'Wybierz rok ze zdjęciami.';
-    if (message.indexOf('Ukryj warstwę') === 0) return 'Ukryj, a potem pokaż warstwę.';
+    if (message.indexOf('Tryb edycji:') === 0) return 'Przeciągnij uchwyt obiektu, a następnie zapisz zmianę.';
+    if (message.indexOf('Tryb usuwania:') === 0) return 'Wskaż obiekt do usunięcia i zatwierdź przyciskiem zapisu.';
+    if (message.indexOf('Edycja zapisana.') === 0) return 'Zmiana zapisana. Teraz usuń ten sam obiekt.';
+    if (message.indexOf('Usunięto obiekt.') === 0) return 'Obiekt usunięty. Wyeksportuj teraz widok mapy.';
+    if (message.indexOf('Zdjęcie otwarte.') === 0) return 'Zamknij okno zdjęcia.';
+    if (message.indexOf('Zdjęcia z roku') === 0) return 'Otwórz zdjęcie i zamknij jego okno.';
+    if (message.indexOf('Brak zdjęć dla roku') === 0) return 'Wybierz inny rok ze zdjęciami.';
+    if (message.indexOf('Ukryj warstwę') === 0) return 'Ukryj i pokaż warstwę przyciskiem oka.';
     return message;
   }
 

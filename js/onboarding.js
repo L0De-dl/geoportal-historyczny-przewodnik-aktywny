@@ -20,7 +20,7 @@
       title: 'Przełączaj lata na suwakach',
       tool: 'Suwaki czasu',
       description: 'Każdy suwak pozwala wybrać rok dla osobnej warstwy: mapy, zabudowy, komunikacji lub zdjęć. Dzięki temu możesz porównywać z sobą różne rodzaje danych z różnych lat.',
-      instruction: 'Przesuń jeden z suwaków w panelu bocznym, aby wybrać inny rok.',
+      instruction: 'Przesuń wszystkie suwaki w panelu bocznym, aby wybrać inne lata.',
       focus: ['#suwak-czasu', '#suwak-zabudowa', '#suwak-komunikacja', '#suwak-zdjecia'],
       action: 'sliders'
     },
@@ -143,6 +143,7 @@
   let guideStartedAt = 0;
   let photoFocusTimer = null;
   let stepActionTimer = null;
+  let changedSliders = new Set();
 
   if (!supportsSpeech) speakButton.hidden = true;
 
@@ -739,6 +740,7 @@
     visibilityTarget = null;
     navigationChanges = { panned: 0, zoomedIn: false, zoomedOut: false };
     photoOpened = false;
+    changedSliders = new Set();
     backdrop.style.opacity = '';
     card.style.width = '';
     card.style.maxHeight = '';
@@ -1023,14 +1025,18 @@
       event.target.value !== stepBaseline.get(event.target.id)
     ) {
       const sliderId = event.target.id;
-      const newValue = event.target.value;
-      const details = 'Zmieniono wartość suwaka ' + sliderId + ' na ' + newValue;
+      changedSliders.add(sliderId);
       window.clearTimeout(stepActionTimer);
       stepActionTimer = window.setTimeout(function () {
         if (card.hidden || completed) return;
-        const slider = document.getElementById(sliderId);
-        if (!slider || slider.value === stepBaseline.get(sliderId)) return;
-        completeAction(details);
+        const allSlidersChanged = Array.from(stepBaseline.keys()).every(function (id) {
+          return changedSliders.has(id);
+        });
+        if (allSlidersChanged) {
+          completeAction('Przesunięto wszystkie suwaki: ' + Array.from(changedSliders).join(', '));
+          return;
+        }
+        setStatus('Przesunięto ' + changedSliders.size + ' z ' + stepBaseline.size + ' suwaków. Przesuń pozostałe.', false);
       }, 650);
     }
   }
@@ -1122,7 +1128,7 @@
     clearPhotoTargets();
     if (card.hidden || completed) return;
     if (event.detail.hasPhotos) {
-      setStatus('Zdjęcia z ' + event.detail.year + ' roku są dostępne. Kliknij pulsujący znacznik na mapie, aby otworzyć fotografię, a po obejrzeniu zamknij jej okno.', true);
+      setStatus('Zdjęcia z ' + event.detail.year + ' roku są dostępne. Kliknij podświetlony znacznik na mapie, aby otworzyć fotografię, a po obejrzeniu zamknij jej okno.', true);
       if (event.detail.locations && event.detail.locations.length) {
         schedulePhotoMapFocus(event.detail.locations);
       }

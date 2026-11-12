@@ -4,7 +4,7 @@
     {
       title: 'Poznaj historię Gołańczy',
       tool: 'Geoportal Historyczny Gołańczy',
-      description: 'Łączy dawne mapy z informacjami o zabudowie, komunikacji i archiwalnych zdjęciach, dzięki czemu możesz odkrywać, jak zmieniało się miasto.',
+      description: 'Niniejszy geoportal łączy dawne mapy z informacjami o zabudowie, komunikacji i archiwalnych zdjęciach, dzięki czemu możesz odkrywać, jak zmieniało się miasto.',
       instruction: 'Kliknij „Rozpocznij”, aby poznać kolejne narzędzia.',
       action: 'start'
     },
@@ -19,7 +19,7 @@
     {
       title: 'Przełączaj lata na suwakach',
       tool: 'Suwaki czasu',
-      description: 'Każdy suwak pozwala wybrać rok dla osobnej warstwy: mapy, zabudowy, komunikacji lub zdjęć. Dzięki temu możesz porównywać różne okresy.',
+      description: 'Każdy suwak pozwala wybrać rok dla osobnej warstwy: mapy, zabudowy, komunikacji lub zdjęć. Dzięki temu możesz porównywać z sobą różne rodzaje danych z różnych lat.',
       instruction: 'Przesuń jeden z suwaków w panelu bocznym, aby wybrać inny rok.',
       focus: ['#suwak-czasu', '#suwak-zabudowa', '#suwak-komunikacja', '#suwak-zdjecia'],
       action: 'sliders'
@@ -36,14 +36,14 @@
       title: 'Otwórz archiwalne zdjęcie',
       tool: 'Archiwalne zdjęcia',
       description: 'Zdjęcia są przypisane do konkretnych miejsc i lat. Znaczniki na mapie pokazują, gdzie wykonano fotografie.',
-      instruction: 'Wybierz rok ze zdjęciami, kliknij pulsujący znacznik na mapie, a po obejrzeniu fotografii zamknij jej okno.',
+      instruction: 'Wybierz rok ze zdjęciami, kliknij podświetlony znacznik na mapie, a po obejrzeniu fotografii zamknij jej okno.',
       focus: '#suwak-zdjecia',
       action: 'photo'
     },
     {
       title: 'Rysuj, mierz i eksportuj',
       tool: 'Narzędzia rysowania, pomiaru i eksportu',
-      description: 'Dzięki nim dodasz własne obiekty, zmierzysz odległości i powierzchnie oraz zapiszesz widok mapy jako obraz.',
+      description: 'Dzięki narzędzią rysowania i eksportu dodasz własne obiekty, zmierzysz odległości i powierzchnie oraz zapiszesz widok mapy jako obraz.',
       instruction: 'Najpierw wybierz narzędzie rysowania z paska mapy i narysuj jeden obiekt.',
       focus: [
         '.leaflet-draw-draw-polyline',
@@ -58,7 +58,7 @@
     {
       title: 'Wszystko gotowe!',
       tool: 'Przewodnik po Geoportalu Historycznym',
-      description: 'Pokazał Ci najważniejsze funkcje mapy. W każdej chwili możesz do niego wrócić, klikając przycisk „?”.',
+      description: 'Przewodnik pokazał Ci najważniejsze funkcje mapy.',
       instruction: 'Kliknij „Zakończ” i rozpocznij odkrywanie historii Gołańczy.',
       action: 'finish'
     }

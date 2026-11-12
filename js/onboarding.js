@@ -12,7 +12,7 @@
       title: 'Poruszaj się po mapie',
       tool: 'Mapa interaktywna',
       description: 'Przesuwaj mapę, aby oglądać różne miejsca, i zmieniaj przybliżenie, by zobaczyć więcej szczegółów lub szerszy obszar.',
-      instruction: 'Przytrzymaj lewy przycisk myszy i przeciągnij mapę co najmniej trzy razy. Następnie przybliż widok kółkiem myszy co najmniej dwa razy. Możesz też użyć przycisku „+”.',
+      instruction: 'Przesuń mapę kilka razy myszką. Przybliż i oddal widok kółkiem myszy lub przyciskami „+” i „−”.',
       focus: ['#map', '.leaflet-control-zoom'],
       action: 'navigation'
     },
@@ -128,7 +128,7 @@
   let drawModeCommitted = false;
   let visibilityChanges = { hidden: false, shown: false };
   let visibilityTarget = null;
-  let navigationChanges = { panned: 0, zoomed: 0 };
+  let navigationChanges = { panned: 0, zoomedIn: false, zoomedOut: false };
   let photoOpened = false;
   let focusedElements = [];
   let photoTargetElements = [];
@@ -137,7 +137,6 @@
   let stepBaseline = null;
   let autoStartTimer = null;
   let speechTimer = null;
-  let stepSpeechTimer = null;
   let spotlightFrame = null;
   let drawHighlightFrame = null;
   let stepStartedAt = 0;
@@ -157,11 +156,10 @@
     }));
   }
 
-  function speakText(text, onEnd) {
+  function speakText(text) {
     if (!supportsSpeech || !text) return;
 
     window.clearTimeout(speechTimer);
-    window.clearTimeout(stepSpeechTimer);
     window.speechSynthesis.cancel();
     const utterance = new window.SpeechSynthesisUtterance(text);
     utterance.lang = 'pl-PL';
@@ -170,11 +168,6 @@
       return voice.lang.toLowerCase().startsWith('pl');
     });
     if (polishVoice) utterance.voice = polishVoice;
-    if (onEnd) {
-      utterance.onend = function () {
-        stepSpeechTimer = window.setTimeout(onEnd, 450);
-      };
-    }
     utterance.onerror = function (event) {
       if (event.error !== 'canceled' && event.error !== 'interrupted') {
         console.warn('Nie udało się odtworzyć polecenia przewodnika.', event.error);
@@ -185,21 +178,17 @@
 
   function speakCurrentStep() {
     const step = steps[currentStep];
-    const stepIndex = currentStep;
     const instructionText = step.action === 'draw' || step.action === 'navigation'
       ? instruction.textContent
       : step.instruction;
     const spokenText = [step.description, instructionText].filter(Boolean).join(' ');
-    speakText(spokenText, function () {
-      if (card.hidden || currentStep !== stepIndex) return;
-      speakText(spokenText);
-    });
+    speakText(spokenText);
   }
 
   function getSpokenStatus(message) {
     if (message.indexOf('Zadanie wykonane') === 0) return 'Zadanie wykonane. Brawo!';
     if (message.indexOf('Zdjęcie jest otwarte.') === 0) return 'Zamknij okno zdjęcia.';
-    if (message.indexOf('Zdjęcia z ') === 0) return 'Zdjęcia są dostępne. Kliknij pulsujący znacznik na mapie, aby otworzyć fotografię, a po obejrzeniu zamknij jej okno.';
+    if (message.indexOf('Zdjęcia z ') === 0) return 'Zdjęcia są dostępne. Kliknij podświetlony znacznik na mapie, aby otworzyć fotografię, a po obejrzeniu zamknij jej okno.';
     return message;
   }
 
@@ -209,22 +198,10 @@
     if (announce !== false) speakText(message);
   }
 
-  function updateMapNavigation(announce) {
-    if (navigationChanges.panned >= 3 && navigationChanges.zoomed >= 2) {
-      completeAction('Przesunięto mapę i zmieniono jej przybliżenie');
-      return;
+  function updateMapNavigation() {
+    if (navigationChanges.panned >= 2 && navigationChanges.zoomedIn && navigationChanges.zoomedOut) {
+      completeAction('Przesunięto mapę kilka razy oraz przybliżono i oddalono widok');
     }
-
-    const pansRemaining = Math.max(0, 3 - navigationChanges.panned);
-    const zoomsRemaining = Math.max(0, 2 - navigationChanges.zoomed);
-    const panPrompt = pansRemaining
-      ? 'Przeciągnij mapę myszką jeszcze ' + pansRemaining + (pansRemaining === 1 ? ' raz.' : ' razy.')
-      : 'Mapa została przesunięta.';
-    const zoomPrompt = zoomsRemaining
-      ? 'Przybliż widok kółkiem myszy jeszcze ' + zoomsRemaining + (zoomsRemaining === 1 ? ' raz.' : ' razy.') + ' Możesz też użyć przycisku „+”.'
-      : '';
-    setDrawInstruction([panPrompt, zoomPrompt].filter(Boolean).join(' '), announce);
-    focusDrawAction(pansRemaining ? '#map' : '.leaflet-control-zoom');
   }
 
   function setStatus(message, announce) {
@@ -668,7 +645,8 @@
     placeShade(shades[1], 0, top, left, bottom - top);
     placeShade(shades[2], right, top, window.innerWidth - right, bottom - top);
     placeShade(shades[3], 0, bottom, window.innerWidth, window.innerHeight - bottom);
-    const keepMapUnshaded = document.body.classList.contains('guide-focus-map');
+    const keepMapUnshaded = document.body.classList.contains('guide-focus-map') ||
+      document.body.classList.contains('guide-focus-navigation');
     shades.forEach(function (shade) {
       shade.hidden = keepMapUnshaded;
     });
@@ -679,7 +657,11 @@
     spotlight.style.width = right - left + 'px';
     spotlight.style.height = bottom - top + 'px';
 
-    if (document.body.classList.contains('guide-focus-map') && window.innerWidth <= 760) {
+    if (
+      (document.body.classList.contains('guide-focus-map') ||
+        document.body.classList.contains('guide-focus-navigation')) &&
+      window.innerWidth <= 760
+    ) {
       const mapRect = document.getElementById('map').getBoundingClientRect();
       card.style.width = Math.min(360, window.innerWidth - 16) + 'px';
       card.style.maxHeight = Math.max(120, window.innerHeight - mapRect.bottom - 16) + 'px';
@@ -735,7 +717,6 @@
 
   function setStep(index) {
     window.clearTimeout(speechTimer);
-    window.clearTimeout(stepSpeechTimer);
     if (stepActionTimer) {
       window.clearTimeout(stepActionTimer);
       stepActionTimer = null;
@@ -756,7 +737,7 @@
     drawModeCommitted = false;
     visibilityChanges = { hidden: false, shown: false };
     visibilityTarget = null;
-    navigationChanges = { panned: 0, zoomed: 0 };
+    navigationChanges = { panned: 0, zoomedIn: false, zoomedOut: false };
     photoOpened = false;
     backdrop.style.opacity = '';
     card.style.width = '';
@@ -765,7 +746,7 @@
     card.style.removeProperty('--guide-map-card-top');
     document.body.style.removeProperty('--guide-photo-popup-max-width');
     document.body.style.removeProperty('--guide-photo-popup-max-height');
-    document.body.classList.remove('guide-focus-panel', 'guide-focus-map', 'guide-focus-visibility', 'guide-focus-photo', 'guide-focus-photo-close');
+    document.body.classList.remove('guide-focus-panel', 'guide-focus-map', 'guide-focus-navigation', 'guide-focus-visibility', 'guide-focus-photo', 'guide-focus-photo-close');
     const step = steps[currentStep];
     if (step.action === 'sliders' || step.action === 'visibility' || step.action === 'photo') {
       document.body.classList.add('guide-focus-panel');
@@ -774,6 +755,8 @@
       document.body.classList.add('guide-focus-visibility');
     } else if (step.action === 'draw') {
       document.body.classList.add('guide-focus-map');
+    } else if (step.action === 'navigation') {
+      document.body.classList.add('guide-focus-navigation');
     } else if (step.action === 'photo') {
       document.body.classList.add('guide-focus-photo');
     }
@@ -842,7 +825,6 @@
 
   function finishGuide() {
     window.clearTimeout(speechTimer);
-    window.clearTimeout(stepSpeechTimer);
     if (stepActionTimer) {
       window.clearTimeout(stepActionTimer);
       stepActionTimer = null;
@@ -856,7 +838,7 @@
     shades.forEach(function (shade) {
       shade.hidden = true;
     });
-    document.body.classList.remove('guide-focus-panel', 'guide-focus-map', 'guide-focus-visibility', 'guide-focus-photo', 'guide-focus-photo-close');
+    document.body.classList.remove('guide-focus-panel', 'guide-focus-map', 'guide-focus-navigation', 'guide-focus-visibility', 'guide-focus-photo', 'guide-focus-photo-close');
     document.body.style.removeProperty('--guide-photo-popup-max-width');
     document.body.style.removeProperty('--guide-photo-popup-max-height');
     card.style.width = '';
@@ -1094,14 +1076,12 @@
   document.addEventListener('geoportal:map-panend', function () {
     if (card.hidden || currentStep !== 1 || completed) return;
     navigationChanges.panned += 1;
-    updateMapNavigation(navigationChanges.panned === 3);
+    updateMapNavigation();
   });
   document.addEventListener('geoportal:map-zoomend', function (event) {
     if (card.hidden || currentStep !== 1 || completed) return;
-    if (event.detail.zoomIn) {
-      navigationChanges.zoomed += 1;
-      updateMapNavigation(true);
-    }
+    navigationChanges[event.detail.zoomIn ? 'zoomedIn' : 'zoomedOut'] = true;
+    updateMapNavigation();
   });
   document.addEventListener('geoportal:photo-opened', function () {
     if (card.hidden || currentStep !== 4 || completed) return;

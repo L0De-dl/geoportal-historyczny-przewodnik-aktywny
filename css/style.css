@@ -362,7 +362,8 @@ body.guide-focus-photo #map {
   }
 }
 
-.guide-focus-map .guide-card {
+.guide-focus-map .guide-card,
+.guide-focus-navigation .guide-card {
   top: var(--guide-map-card-top, 16px) !important;
   right: 16px;
   bottom: auto;
@@ -600,12 +601,14 @@ body.guide-focus-photo #map {
     display: none !important;
   }
 
-  .guide-focus-map .guide-card {
+  .guide-focus-map .guide-card,
+  .guide-focus-navigation .guide-card {
     right: auto !important;
     left: 8px !important;
   }
 
-  .guide-focus-map .guide-card-actions {
+  .guide-focus-map .guide-card-actions,
+  .guide-focus-navigation .guide-card-actions {
     position: sticky;
     bottom: -20px;
     z-index: 1;

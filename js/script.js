@@ -8,6 +8,21 @@ map.on('move zoom', function () {
   document.dispatchEvent(new Event('geoportal:map-view-change'));
 });
 
+map.on('dragend', function () {
+  document.dispatchEvent(new Event('geoportal:map-panend'));
+});
+
+let zoomBeforeInteraction = map.getZoom();
+map.on('zoomstart', function () {
+  zoomBeforeInteraction = map.getZoom();
+});
+
+map.on('zoomend', function () {
+  document.dispatchEvent(new CustomEvent('geoportal:map-zoomend', {
+    detail: { zoomIn: map.getZoom() > zoomBeforeInteraction }
+  }));
+});
+
 const PrintControl = L.Control.extend({
     options: { position: 'topleft' },
 

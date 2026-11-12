@@ -3,47 +3,63 @@
   const steps = [
     {
       title: 'Poznaj historię Gołańczy',
-      description: 'Odkrywaj, jak miasto zmieniało się w czasie. Porównuj dawne mapy, zabudowę, komunikację oraz archiwalne zdjęcia. Ten przewodnik pokaże Ci najważniejsze funkcje.',
-      spoken: 'Poznaj historię Gołańczy na interaktywnej mapie.',
-      learning: 'Geoportal łączy mapy historyczne z warstwami zabudowy, dróg i zdjęć z różnych lat.',
+      tool: 'Geoportal Historyczny Gołańczy',
+      description: 'Łączy dawne mapy z informacjami o zabudowie, komunikacji i archiwalnych zdjęciach, dzięki czemu możesz odkrywać, jak zmieniało się miasto.',
+      instruction: 'Kliknij „Rozpocznij”, aby poznać kolejne narzędzia.',
       action: 'start'
     },
     {
+      title: 'Poruszaj się po mapie',
+      tool: 'Mapa interaktywna',
+      description: 'Przesuwaj mapę, aby oglądać różne miejsca, i zmieniaj przybliżenie, by zobaczyć więcej szczegółów lub szerszy obszar.',
+      instruction: 'Przytrzymaj lewy przycisk myszy i przeciągnij mapę co najmniej trzy razy. Następnie przybliż widok kółkiem myszy co najmniej dwa razy. Możesz też użyć przycisku „+”.',
+      focus: ['#map', '.leaflet-control-zoom'],
+      action: 'navigation'
+    },
+    {
       title: 'Przełączaj lata na suwakach',
-      description: 'Przesuń dowolny suwak w panelu bocznym, aby zmienić rok podkładu mapowego, zabudowy, komunikacji lub zdjęć.',
-      spoken: 'Zmień dowolny suwak roku.',
-      learning: 'Każdy suwak steruje osobną warstwą, dzięki czemu możesz zestawiać ze sobą różne okresy historyczne.',
+      tool: 'Suwaki czasu',
+      description: 'Każdy suwak pozwala wybrać rok dla osobnej warstwy: mapy, zabudowy, komunikacji lub zdjęć. Dzięki temu możesz porównywać różne okresy.',
+      instruction: 'Przesuń jeden z suwaków w panelu bocznym, aby wybrać inny rok.',
       focus: ['#suwak-czasu', '#suwak-zabudowa', '#suwak-komunikacja', '#suwak-zdjecia'],
       action: 'sliders'
     },
     {
       title: 'Włączaj i wyłączaj warstwy',
-      description: 'Użyj przycisku oka przy dowolnej warstwie, aby ją ukryć, a potem kliknij go ponownie, aby przywrócić jej widoczność.',
-      spoken: 'Ukryj i pokaż ponownie dowolną warstwę.',
-      learning: 'Przycisk oka pozwala kontrolować widoczność warstw bez utraty wybranego roku.',
+      tool: 'Przyciski widoczności warstw',
+      description: 'Ikony oka przy warstwach pozwalają sterować ich widocznością na mapie.',
+      instruction: 'Najpierw wyłącz widoczność wybranej warstwy, klikając ikonę oka.',
       focus: ['#btn-toggle-podklad', '#btn-toggle-zabudowa', '#btn-toggle-komunikacja', '#btn-toggle-zdjecia'],
       action: 'visibility'
     },
     {
       title: 'Otwórz archiwalne zdjęcie',
-      description: 'Wybierz rok, w którym dostępne są zdjęcia. Następnie kliknij pulsujący znacznik na mapie, aby otworzyć fotografię, i zamknij jej okno.',
-      spoken: 'Otwórz zdjęcie archiwalne i zamknij je.',
-      learning: 'Zdjęcia są przypisane do konkretnych miejsc i lat. Wybierz odpowiedni rok i kliknij znacznik na mapie.',
+      tool: 'Archiwalne zdjęcia',
+      description: 'Zdjęcia są przypisane do konkretnych miejsc i lat. Znaczniki na mapie pokazują, gdzie wykonano fotografie.',
+      instruction: 'Wybierz rok ze zdjęciami, kliknij pulsujący znacznik na mapie, a po obejrzeniu fotografii zamknij jej okno.',
       focus: '#suwak-zdjecia',
       action: 'photo'
     },
     {
       title: 'Rysuj, mierz i eksportuj',
-      description: 'Narysuj obiekt na mapie, edytuj jego kształt, usuń go, a na koniec wyeksportuj widok mapy do pliku graficznego.',
-      spoken: 'Narysuj obiekt na mapie, edytuj go, usuń i wyeksportuj widok.',
-      learning: 'Własne rysunki trafiają na osobną warstwę. Linie pokazują długość, a poligony powierzchnię.',
-      focus: ['.leaflet-draw', '.print-button'],
+      tool: 'Narzędzia rysowania, pomiaru i eksportu',
+      description: 'Dzięki nim dodasz własne obiekty, zmierzysz odległości i powierzchnie oraz zapiszesz widok mapy jako obraz.',
+      instruction: 'Najpierw wybierz narzędzie rysowania z paska mapy i narysuj jeden obiekt.',
+      focus: [
+        '.leaflet-draw-draw-polyline',
+        '.leaflet-draw-draw-polygon',
+        '.leaflet-draw-draw-rectangle',
+        '.leaflet-draw-draw-circle',
+        '.leaflet-draw-draw-marker',
+        '.leaflet-draw-draw-circlemarker'
+      ],
       action: 'draw'
     },
     {
       title: 'Wszystko gotowe!',
-      description: 'Znasz już podstawowe narzędzia. Możesz zacząć eksplorować historię Gołańczy. W każdej chwili wrócisz do przewodnika, klikając przycisk „?”.',
-      spoken: 'Gotowe! Możesz rozpocząć eksplorację.',
+      tool: 'Przewodnik po Geoportalu Historycznym',
+      description: 'Pokazał Ci najważniejsze funkcje mapy. W każdej chwili możesz do niego wrócić, klikając przycisk „?”.',
+      instruction: 'Kliknij „Zakończ” i rozpocznij odkrywanie historii Gołańczy.',
       action: 'finish'
     }
   ];
@@ -65,25 +81,25 @@
   card.className = 'guide-card';
   card.setAttribute('role', 'dialog');
   card.setAttribute('aria-labelledby', 'guide-title');
-  card.setAttribute('aria-describedby', 'guide-description');
+  card.setAttribute('aria-describedby', 'guide-description guide-instruction-text');
   card.innerHTML = [
     '<div class="guide-card-top">',
     '  <span class="guide-progress"></span>',
-    '  <button class="guide-speak" type="button" aria-label="Odtwórz polecenie lektora" title="Odtwórz polecenie lektora">🔊</button>',
+    '  <button class="guide-speak" type="button" aria-label="Odtwórz opis kroku" title="Odtwórz opis kroku">🔊</button>',
     '</div>',
     '<div class="guide-progress-track" role="progressbar" aria-label="Postęp przewodnika" aria-valuemin="1" aria-valuemax="' + steps.length + '"><span></span></div>',
     '<h2 id="guide-title"></h2>',
     '<p id="guide-description"></p>',
+    '<div class="guide-instruction">',
+    '  <strong>Teraz Ty</strong>',
+    '  <span id="guide-instruction-text" aria-live="polite"></span>',
+    '</div>',
     '<ol class="guide-checklist" aria-label="Postęp zadania" hidden>',
     '  <li data-task="draw">Narysuj jeden obiekt</li>',
-    '  <li data-task="edit">Zapisz edycję tego obiektu</li>',
+    '  <li data-task="edit">Zmień i zapisz obiekt</li>',
     '  <li data-task="delete">Usuń ten sam obiekt</li>',
     '  <li data-task="export">Wyeksportuj mapę</li>',
     '</ol>',
-    '<div class="guide-learning" role="status" hidden>',
-    '  <strong>Jak to działa?</strong>',
-    '  <span></span>',
-    '</div>',
     '<div class="guide-status" aria-live="polite"></div>',
     '<div class="guide-card-actions">',
     '  <button class="guide-next" type="button"></button>',
@@ -92,6 +108,7 @@
   const progress = card.querySelector('.guide-progress');
   const title = card.querySelector('#guide-title');
   const description = card.querySelector('#guide-description');
+  const instruction = card.querySelector('#guide-instruction-text');
   const status = card.querySelector('.guide-status');
   const nextButton = card.querySelector('.guide-next');
   const speakButton = card.querySelector('.guide-speak');
@@ -99,8 +116,6 @@
   const progressBar = progressTrack.querySelector('span');
   const checklist = card.querySelector('.guide-checklist');
   const checklistItems = Array.from(checklist.querySelectorAll('li'));
-  const learning = card.querySelector('.guide-learning');
-  const learningText = learning.querySelector('span');
   const supportsSpeech = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 
   let currentStep = -1;
@@ -112,6 +127,8 @@
   let activeDrawMode = null;
   let drawModeCommitted = false;
   let visibilityChanges = { hidden: false, shown: false };
+  let visibilityTarget = null;
+  let navigationChanges = { panned: 0, zoomed: 0 };
   let photoOpened = false;
   let focusedElements = [];
   let photoTargetElements = [];
@@ -120,11 +137,13 @@
   let stepBaseline = null;
   let autoStartTimer = null;
   let speechTimer = null;
+  let stepSpeechTimer = null;
   let spotlightFrame = null;
   let drawHighlightFrame = null;
   let stepStartedAt = 0;
   let guideStartedAt = 0;
   let photoFocusTimer = null;
+  let stepActionTimer = null;
 
   if (!supportsSpeech) speakButton.hidden = true;
 
@@ -138,18 +157,24 @@
     }));
   }
 
-  function speakText(text) {
+  function speakText(text, onEnd) {
     if (!supportsSpeech || !text) return;
 
     window.clearTimeout(speechTimer);
+    window.clearTimeout(stepSpeechTimer);
     window.speechSynthesis.cancel();
     const utterance = new window.SpeechSynthesisUtterance(text);
     utterance.lang = 'pl-PL';
-    utterance.rate = 1.2;
+    utterance.rate = 0.85;
     const polishVoice = window.speechSynthesis.getVoices().find(function (voice) {
       return voice.lang.toLowerCase().startsWith('pl');
     });
     if (polishVoice) utterance.voice = polishVoice;
+    if (onEnd) {
+      utterance.onend = function () {
+        stepSpeechTimer = window.setTimeout(onEnd, 450);
+      };
+    }
     utterance.onerror = function (event) {
       if (event.error !== 'canceled' && event.error !== 'interrupted') {
         console.warn('Nie udało się odtworzyć polecenia przewodnika.', event.error);
@@ -160,27 +185,46 @@
 
   function speakCurrentStep() {
     const step = steps[currentStep];
-    speakText([step.spoken || step.title, step.learning].filter(Boolean).join(' '));
+    const stepIndex = currentStep;
+    const instructionText = step.action === 'draw' || step.action === 'navigation'
+      ? instruction.textContent
+      : step.instruction;
+    const spokenText = [step.description, instructionText].filter(Boolean).join(' ');
+    speakText(spokenText, function () {
+      if (card.hidden || currentStep !== stepIndex) return;
+      speakText(spokenText);
+    });
   }
 
-  function setLearning(message, spokenMessage) {
-    learningText.textContent = message;
-    learning.hidden = !message;
-    if (spokenMessage && !card.hidden) speakText(spokenMessage);
-  }
-
-function getSpokenStatus(message) {
+  function getSpokenStatus(message) {
     if (message.indexOf('Zadanie wykonane') === 0) return 'Zadanie wykonane. Brawo!';
-    if (message.indexOf('Pozostało:') === 0) return null;
-    if (message.indexOf('Tryb edycji:') === 0) return 'Przeciągnij uchwyt obiektu, a następnie zapisz zmianę.';
-    if (message.indexOf('Tryb usuwania:') === 0) return 'Wskaż obiekt do usunięcia i zatwierdź przyciskiem zapisu.';
-    if (message.indexOf('Edycja zapisana.') === 0) return 'Zmiana zapisana. Teraz usuń ten sam obiekt.';
-    if (message.indexOf('Usunięto obiekt.') === 0) return 'Obiekt usunięty. Wyeksportuj teraz widok mapy.';
-    if (message.indexOf('Zdjęcie otwarte.') === 0) return 'Zamknij okno zdjęcia.';
-    if (message.indexOf('Zdjęcia z roku') === 0) return 'Otwórz zdjęcie i zamknij jego okno.';
-    if (message.indexOf('Brak zdjęć dla roku') === 0) return 'Wybierz inny rok ze zdjęciami.';
-    if (message.indexOf('Ukryj warstwę') === 0) return 'Ukryj i pokaż warstwę przyciskiem oka.';
+    if (message.indexOf('Zdjęcie jest otwarte.') === 0) return 'Zamknij okno zdjęcia.';
+    if (message.indexOf('Zdjęcia z ') === 0) return 'Zdjęcia są dostępne. Kliknij pulsujący znacznik na mapie, aby otworzyć fotografię, a po obejrzeniu zamknij jej okno.';
     return message;
+  }
+
+  function setDrawInstruction(message, announce) {
+    instruction.textContent = message;
+    setStatus('', false);
+    if (announce !== false) speakText(message);
+  }
+
+  function updateMapNavigation(announce) {
+    if (navigationChanges.panned >= 3 && navigationChanges.zoomed >= 2) {
+      completeAction('Przesunięto mapę i zmieniono jej przybliżenie');
+      return;
+    }
+
+    const pansRemaining = Math.max(0, 3 - navigationChanges.panned);
+    const zoomsRemaining = Math.max(0, 2 - navigationChanges.zoomed);
+    const panPrompt = pansRemaining
+      ? 'Przeciągnij mapę myszką jeszcze ' + pansRemaining + (pansRemaining === 1 ? ' raz.' : ' razy.')
+      : 'Mapa została przesunięta.';
+    const zoomPrompt = zoomsRemaining
+      ? 'Przybliż widok kółkiem myszy jeszcze ' + zoomsRemaining + (zoomsRemaining === 1 ? ' raz.' : ' razy.') + ' Możesz też użyć przycisku „+”.'
+      : '';
+    setDrawInstruction([panPrompt, zoomPrompt].filter(Boolean).join(' '), announce);
+    focusDrawAction(pansRemaining ? '#map' : '.leaflet-control-zoom');
   }
 
   function setStatus(message, announce) {
@@ -222,7 +266,7 @@ function getSpokenStatus(message) {
   }
 
   function highlightPhotoMarkers() {
-    if (card.hidden || currentStep !== 3 || completed) return;
+    if (card.hidden || currentStep !== 4 || completed) return;
     clearPhotoTargets();
     photoTargetElements = Array.from(document.querySelectorAll('.leaflet-marker-icon.photo-marker'));
     photoTargetElements.forEach(function (element) {
@@ -356,18 +400,27 @@ function getSpokenStatus(message) {
     drawHighlightMap.addLayer(drawHighlightGroup);
   }
 
-  function focusDrawAction(title) {
-    const action = title === 'Eksport mapy'
-      ? document.querySelector('.print-button')
-      : document.querySelector('.leaflet-draw-actions a[title="' + title + '"]');
-    if (action) setDynamicFocus([action]);
+  function focusDrawAction(selector) {
+    const action = document.querySelector(selector);
+    setDynamicFocus(action ? [action] : []);
+  }
+
+  function focusDrawTools() {
+    setDynamicFocus(steps[4].focus.map(function (selector) {
+      return document.querySelector(selector);
+    }).filter(Boolean));
   }
 
   function focusDrawToolbar() {
-    setDynamicFocus([
-      document.querySelector('.leaflet-draw'),
-      document.querySelector('.print-button')
-    ]);
+    if (!drawnLayer) {
+      focusDrawTools();
+    } else if (!editedShape) {
+      focusDrawAction('.leaflet-draw-edit-edit');
+    } else if (!deletedShape) {
+      focusDrawAction('.leaflet-draw-edit-remove');
+    } else if (!exportCompleted) {
+      focusDrawAction('.print-button');
+    }
   }
 
   function getVisibleDrawAction(titlePrefix) {
@@ -376,28 +429,27 @@ function getSpokenStatus(message) {
     });
   }
 
-  function focusDrawnShapes(layers, modeSelector) {
-    const modeButton = document.querySelector(modeSelector);
+  function focusDrawnShapes() {
     const saveButton = getVisibleDrawAction('Save changes') ||
       document.querySelector('.leaflet-draw-actions a[title="Save changes"]');
     const cancelButton = getVisibleDrawAction('Cancel') ||
       document.querySelector('.leaflet-draw-actions a[title^="Cancel"]');
-    setDynamicFocus([modeButton, saveButton, cancelButton].filter(Boolean));
+    setDynamicFocus([saveButton, cancelButton].filter(Boolean));
   }
 
-  function scheduleDrawModeFocus(layers, map, mode, selector) {
+  function scheduleDrawModeFocus(layers, map, mode) {
     requestAnimationFrame(function () {
-      if (card.hidden || currentStep !== 4 || activeDrawMode !== mode) return;
-      focusDrawnShapes(layers, selector);
+      if (card.hidden || currentStep !== 5 || activeDrawMode !== mode) return;
+      focusDrawnShapes();
       highlightDrawnLayers(layers, map);
     });
   }
 
   function scheduleDrawHighlightUpdate(event) {
-    if (card.hidden || currentStep !== 4 || activeDrawMode !== 'edit' || drawHighlightFrame !== null) return;
+    if (card.hidden || currentStep !== 5 || activeDrawMode !== 'edit' || drawHighlightFrame !== null) return;
     drawHighlightFrame = requestAnimationFrame(function () {
       drawHighlightFrame = null;
-      if (card.hidden || currentStep !== 4 || activeDrawMode !== 'edit') return;
+      if (card.hidden || currentStep !== 5 || activeDrawMode !== 'edit') return;
       highlightDrawnLayers(event.detail.layers, event.detail.map);
     });
   }
@@ -426,7 +478,7 @@ function getSpokenStatus(message) {
   }
 
   function keepPhotoPopupVisible() {
-    if (card.hidden || currentStep !== 3) return;
+    if (card.hidden || currentStep !== 4) return;
     requestAnimationFrame(function () {
       const popup = document.querySelector('.leaflet-popup');
       if (!popup) return;
@@ -465,7 +517,7 @@ function getSpokenStatus(message) {
     window.clearTimeout(photoFocusTimer);
     photoFocusTimer = window.setTimeout(function () {
       photoFocusTimer = null;
-      if (card.hidden || currentStep !== 3 || completed) return;
+      if (card.hidden || currentStep !== 4 || completed) return;
       map.fitBounds(L.latLngBounds(locations), {
         padding: [40, 40],
         maxZoom: 16,
@@ -683,6 +735,11 @@ function getSpokenStatus(message) {
 
   function setStep(index) {
     window.clearTimeout(speechTimer);
+    window.clearTimeout(stepSpeechTimer);
+    if (stepActionTimer) {
+      window.clearTimeout(stepActionTimer);
+      stepActionTimer = null;
+    }
     clearFocus();
     currentStep = index;
     stepStartedAt = Date.now();
@@ -698,6 +755,8 @@ function getSpokenStatus(message) {
     activeDrawMode = null;
     drawModeCommitted = false;
     visibilityChanges = { hidden: false, shown: false };
+    visibilityTarget = null;
+    navigationChanges = { panned: 0, zoomed: 0 };
     photoOpened = false;
     backdrop.style.opacity = '';
     card.style.width = '';
@@ -719,36 +778,30 @@ function getSpokenStatus(message) {
       document.body.classList.add('guide-focus-photo');
     }
 
-    title.textContent = step.title;
+    title.textContent = step.tool;
     description.textContent = step.description;
+    instruction.textContent = step.instruction;
     progress.textContent = 'Krok ' + (currentStep + 1) + ' z ' + steps.length;
     progressTrack.setAttribute('aria-valuenow', String(currentStep + 1));
     progressBar.style.width = ((currentStep + 1) / steps.length * 100) + '%';
     checklist.hidden = step.action !== 'draw';
     setStatus('', false);
     status.classList.remove('is-success');
-    setLearning(step.learning, null);
     if (step.action === 'draw') {
-      setStatus('Narysuj jeden obiekt, edytuj go, usuń go i wyeksportuj mapę.', false);
       updateDrawChecklist();
-      setLearning(step.learning + ' Wybierz narzędzie z paska i narysuj obiekt.', null);
     } else if (step.action === 'sliders') {
       stepBaseline = new Map(
         Array.from(document.querySelectorAll('.panel-boczny input[type="range"]')).map(function (slider) {
           return [slider.id, slider.value];
         })
       );
-    } else if (step.action === 'visibility') {
-      setStatus('Ukryj warstwę przyciskiem oka, a następnie ponownie ją pokaż.', false);
-    } else if (step.action === 'photo') {
-      setStatus('Otwórz zdjęcie na mapie, a po obejrzeniu zamknij jego popup.', false);
     }
 
     if (step.focus) {
       const selectors = Array.isArray(step.focus) ? step.focus : [step.focus];
       focusedElements = selectors.map(function (selector) {
         const control = document.querySelector(selector);
-        if (step.action === 'visibility') return control;
+        if (step.action === 'visibility' || step.action === 'draw' || step.action === 'navigation') return control;
         return control && (control.closest('.sekcja-panelu') || control.closest('.leaflet-control') || control);
       }).filter(Boolean);
       focusedElements.forEach(function (element) {
@@ -760,7 +813,7 @@ function getSpokenStatus(message) {
     nextButton.disabled = step.action !== 'start' && step.action !== 'finish';
     nextButton.textContent = step.action === 'start'
       ? 'Rozpocznij'
-      : (step.action === 'finish' ? 'Zakończ' : 'Wykonaj zadanie');
+      : (step.action === 'finish' ? 'Zakończ' : 'Wykonaj krok na mapie');
     card.hidden = false;
     backdrop.hidden = false;
     if (step.action === 'photo') {
@@ -789,6 +842,11 @@ function getSpokenStatus(message) {
 
   function finishGuide() {
     window.clearTimeout(speechTimer);
+    window.clearTimeout(stepSpeechTimer);
+    if (stepActionTimer) {
+      window.clearTimeout(stepActionTimer);
+      stepActionTimer = null;
+    }
     if (supportsSpeech) window.speechSynthesis.cancel();
     clearFocus();
     clearPhotoTargets();
@@ -824,13 +882,20 @@ function getSpokenStatus(message) {
   }
 
   function completeAction(details) {
+    if (stepActionTimer) {
+      window.clearTimeout(stepActionTimer);
+      stepActionTimer = null;
+    }
     if (completed) return;
     completed = true;
     setStatus('Zadanie wykonane — brawo!', true);
-    if (currentStep === 4) {
+    if (steps[currentStep].action === 'sliders' || steps[currentStep].action === 'visibility' || steps[currentStep].action === 'navigation' || steps[currentStep].action === 'photo') {
+      instruction.textContent = 'Kliknij „Dalej”, aby przejść do następnego kroku.';
+    }
+    if (steps[currentStep].action === 'draw') {
       window.clearTimeout(speechTimer);
       speechTimer = window.setTimeout(function () {
-        if (!card.hidden) speakText('Gotowe. Narysowany obiekt został edytowany i usunięty, a widok mapy zapisany jako obraz.');
+        if (!card.hidden) speakText('Gotowe. Narysowany obiekt został edytowany i usunięty, a widok mapy zapisano jako obraz.');
       }, 350);
     }
     status.classList.add('is-success');
@@ -849,33 +914,42 @@ function getSpokenStatus(message) {
       return;
     }
 
-    const remaining = [];
-    if (!drawnLayer) remaining.push('narysuj jeden obiekt');
-    if (!editedShape) remaining.push('edytuj go');
-    if (!deletedShape) remaining.push('usuń go');
-    if (!exportCompleted) remaining.push('wyeksportuj mapę do obrazka');
-    setStatus('Pozostało: ' + remaining.join(' oraz ') + '.', false);
+    const nextAction = !drawnLayer
+      ? 'Narysuj jeden obiekt na mapie.'
+      : (!editedShape
+        ? 'Obiekt narysowany. Teraz kliknij podświetloną ikonę edycji, zmień obiekt i kliknij „Zapisz zmiany”.'
+        : (!deletedShape
+          ? 'Edycja zapisana. Teraz kliknij podświetloną ikonę usuwania, wybierz ten sam obiekt i kliknij „Zapisz zmiany”.'
+          : 'Obiekt usunięty. Na koniec kliknij ikonę drukarki, aby wyeksportować widok mapy.'));
+    setDrawInstruction(nextAction);
+    if (!drawnLayer) {
+      focusDrawTools();
+    } else if (!editedShape) {
+      focusDrawAction('.leaflet-draw-edit-edit');
+    } else if (!deletedShape) {
+      focusDrawAction('.leaflet-draw-edit-remove');
+    } else if (!exportCompleted) {
+      focusDrawAction('.print-button');
+    }
   }
 
   function handleDrawEditStarted(event) {
-    if (card.hidden || currentStep !== 4) return;
+    if (card.hidden || currentStep !== 5) return;
     activeDrawMode = 'edit';
     drawModeCommitted = false;
     if (!drawnLayer) {
-      setStatus('Najpierw narysuj jeden obiekt.', true);
-      setLearning('Tryb edycji działa na obiektach dodanych do warstwy rysunków. Najpierw narysuj własny element.', null);
+      setStatus('Najpierw narysuj obiekt, który chcesz edytować.', true);
       focusDrawToolbar();
       return;
     }
-    setStatus('Tryb edycji: przeciągnij narysowany obiekt lub jego uchwyt, aby go zmienić, a następnie kliknij „Zapisz zmiany”.', true);
-    setLearning('Edycja zmienia położenie lub kształt elementu. Zapis zatwierdza zmianę, a anulowanie ją odrzuca.', null);
-    focusDrawnShapes([drawnLayer], '.leaflet-draw-edit-edit');
-    scheduleDrawModeFocus([drawnLayer], event.detail.map, 'edit', '.leaflet-draw-edit-edit');
+    setDrawInstruction('Przeciągnij obiekt lub jego uchwyty, aby zmienić położenie albo kształt. Następnie kliknij „Zapisz zmiany”.');
+    focusDrawnShapes();
+    scheduleDrawModeFocus([drawnLayer], event.detail.map, 'edit');
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Wskazano obiekty i przycisk zapisu w trybie edycji');
   }
 
   function handleDrawEditStopped() {
-    if (card.hidden || currentStep !== 4 || activeDrawMode !== 'edit') return;
+    if (card.hidden || currentStep !== 5 || activeDrawMode !== 'edit') return;
     const wasCommitted = drawModeCommitted;
     activeDrawMode = null;
     drawModeCommitted = false;
@@ -883,22 +957,20 @@ function getSpokenStatus(message) {
 
     setStatus(
       editedShape
-        ? 'Nie zapisano nowych zmian. Wybierz na pasku narzędzi kolejną czynność.'
-        : 'Edycja anulowana lub zakończona bez zmian. Wybierz „Edytuj obiekty” i zapisz zmianę, aby zaliczyć edycję.',
+        ? 'Nie zapisano nowych zmian. Wybierz kolejne narzędzie z paska.'
+        : 'Edycja została anulowana lub zakończona bez zmian. Wybierz „Edytuj obiekty”, zmień obiekt i kliknij „Zapisz zmiany”.',
       true
     );
-    setLearning('Anulowanie nie zmienia obiektu. Wybierz edycję ponownie i zapisz widoczną zmianę.', null);
     focusDrawToolbar();
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Tryb edycji zakończony bez zapisanych zmian');
   }
 
   function handleDrawDeleteStarted(event) {
-    if (card.hidden || currentStep !== 4) return;
+    if (card.hidden || currentStep !== 5) return;
     activeDrawMode = 'delete';
     drawModeCommitted = false;
     if (!editedShape) {
-      setStatus('Najpierw kliknij „Anuluj”, aby wyjść z trybu usuwania. Następnie wybierz „Edytuj obiekty”, zmień obiekt i kliknij „Zapisz zmiany”.', true);
-      setLearning('Usuwanie jest osobnym trybem. Najpierw zapisz edycję, aby poznać pełny cykl pracy z obiektem.', null);
+      setStatus('Najpierw kliknij „Anuluj”, aby zamknąć tryb usuwania. Następnie wybierz „Edytuj obiekty”, zmień obiekt i kliknij „Zapisz zmiany”.', true);
       setDynamicFocus([
         document.querySelector('.leaflet-draw-actions a[title="Cancel editing, discards all changes"]'),
         document.querySelector('.leaflet-draw-edit-edit')
@@ -906,15 +978,14 @@ function getSpokenStatus(message) {
       return;
     }
 
-    setStatus('Kliknij ten sam, edytowany obiekt, a potem „Zapisz zmiany”.', true);
-    setLearning('Kliknięcie zaznacza element do usunięcia. Dopiero „Zapisz zmiany” usuwa go z warstwy.', null);
-    focusDrawnShapes([drawnLayer], '.leaflet-draw-edit-remove');
-    scheduleDrawModeFocus([drawnLayer], event.detail.map, 'delete', '.leaflet-draw-edit-remove');
+    setDrawInstruction('Kliknij ten sam obiekt, który przed chwilą edytowano, a następnie wybierz „Zapisz zmiany”.');
+    focusDrawnShapes();
+    scheduleDrawModeFocus([drawnLayer], event.detail.map, 'delete');
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Wskazano obiekt do usunięcia i przycisk zapisu');
   }
 
   function handleDrawDeleteStopped() {
-    if (card.hidden || currentStep !== 4 || activeDrawMode !== 'delete') return;
+    if (card.hidden || currentStep !== 5 || activeDrawMode !== 'delete') return;
     const wasCommitted = drawModeCommitted;
     activeDrawMode = null;
     drawModeCommitted = false;
@@ -922,13 +993,12 @@ function getSpokenStatus(message) {
 
     setStatus(
       deletedShape
-        ? 'Nie zapisano kolejnego usunięcia. Wybierz na pasku narzędzi kolejną czynność.'
+        ? 'Nie zapisano kolejnego usunięcia. Wybierz następne narzędzie z paska.'
         : (editedShape
-          ? 'Usuwanie anulowane lub zakończone bez wyboru obiektu. Wybierz „Usuń obiekty” i zapisz usunięcie.'
-          : 'Usuwanie anulowane. Najpierw wybierz „Edytuj obiekty”, zmień obiekt i kliknij „Zapisz zmiany”.'),
+          ? 'Usuwanie zostało anulowane lub zakończone bez wyboru obiektu. Wybierz „Usuń obiekty”, zaznacz obiekt i kliknij „Zapisz zmiany”.'
+          : 'Usuwanie zostało anulowane. Najpierw wybierz „Edytuj obiekty”, zmień obiekt i kliknij „Zapisz zmiany”.'),
       true
     );
-    setLearning('Anulowanie zamyka tryb usuwania bez zmian w warstwie. Możesz ponowić próbę.', null);
     focusDrawToolbar();
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Tryb usuwania zakończony bez zapisanej zmiany');
   }
@@ -939,10 +1009,9 @@ function getSpokenStatus(message) {
       return;
     }
 
-    const remaining = [];
-    if (!visibilityChanges.hidden) remaining.push('wyłącz widoczność dowolnej warstwy');
-    if (!visibilityChanges.shown) remaining.push('włącz ponownie widoczność dowolnej warstwy');
-    setStatus('Pozostało: ' + remaining.join(' oraz ') + '.', false);
+    if (visibilityChanges.hidden) {
+      setStatus('Warstwa jest ukryta. Teraz kliknij ponownie tę samą ikonę oka, aby ją wyświetlić.', true);
+    }
   }
 
   function continueGuide() {
@@ -957,7 +1026,7 @@ function getSpokenStatus(message) {
     }
     if (!completed) return;
     backdrop.style.opacity = '';
-    if (currentStep === 3) {
+    if (currentStep === 4) {
       document.dispatchEvent(new CustomEvent('geoportal:guide-prepare-draw'));
     }
     setStep(currentStep + 1);
@@ -966,12 +1035,21 @@ function getSpokenStatus(message) {
   function onRangeChange(event) {
     if (card.hidden || completed || !event.target.matches('input[type="range"]')) return;
     if (
-      currentStep === 1 &&
+      currentStep === 2 &&
       stepBaseline instanceof Map &&
       stepBaseline.has(event.target.id) &&
       event.target.value !== stepBaseline.get(event.target.id)
     ) {
-      completeAction('Zmieniono wartość suwaka ' + event.target.id + ' na ' + event.target.value);
+      const sliderId = event.target.id;
+      const newValue = event.target.value;
+      const details = 'Zmieniono wartość suwaka ' + sliderId + ' na ' + newValue;
+      window.clearTimeout(stepActionTimer);
+      stepActionTimer = window.setTimeout(function () {
+        if (card.hidden || completed) return;
+        const slider = document.getElementById(sliderId);
+        if (!slider || slider.value === stepBaseline.get(sliderId)) return;
+        completeAction(details);
+      }, 650);
     }
   }
 
@@ -980,13 +1058,23 @@ function getSpokenStatus(message) {
     const target = event.target.closest('button');
     if (!target) return;
 
-    if (currentStep === 2 && target.matches('button[id^="btn-toggle-"]')) {
+    if (currentStep === 3 && target.matches('button[id^="btn-toggle-"]')) {
       if (target.classList.contains('inactive')) {
-        visibilityChanges.hidden = true;
+        if (!visibilityChanges.hidden) {
+          visibilityChanges.hidden = true;
+          visibilityTarget = target.id;
+          setDynamicFocus([target]);
+          updateVisibilityProgress();
+        } else if (target.id !== visibilityTarget) {
+          setStatus('Kliknij ponownie ikonę oka przy ukrytej warstwie, aby ją wyświetlić.', true);
+          setDynamicFocus([document.getElementById(visibilityTarget)]);
+        }
       } else {
-        visibilityChanges.shown = true;
+        if (visibilityChanges.hidden && target.id === visibilityTarget) {
+          visibilityChanges.shown = true;
+          updateVisibilityProgress();
+        }
       }
-      updateVisibilityProgress();
     }
   }
 
@@ -998,10 +1086,27 @@ function getSpokenStatus(message) {
   document.addEventListener('input', onRangeChange);
   document.addEventListener('change', onRangeChange);
   document.addEventListener('click', onInterfaceClick);
+  document.addEventListener('geoportal:draw-start', function () {
+    if (card.hidden || currentStep !== 5 || completed) return;
+    setDrawInstruction('Narzędzie wybrane. Kliknij mapę, aby rozpocząć rysowanie obiektu.');
+    setDynamicFocus([document.getElementById('map')]);
+  });
+  document.addEventListener('geoportal:map-panend', function () {
+    if (card.hidden || currentStep !== 1 || completed) return;
+    navigationChanges.panned += 1;
+    updateMapNavigation(navigationChanges.panned === 3);
+  });
+  document.addEventListener('geoportal:map-zoomend', function (event) {
+    if (card.hidden || currentStep !== 1 || completed) return;
+    if (event.detail.zoomIn) {
+      navigationChanges.zoomed += 1;
+      updateMapNavigation(true);
+    }
+  });
   document.addEventListener('geoportal:photo-opened', function () {
-    if (card.hidden || currentStep !== 3 || completed) return;
+    if (card.hidden || currentStep !== 4 || completed) return;
     photoOpened = true;
-    setStatus('Zdjęcie otwarte. Zamknij popup, aby zaliczyć zadanie.', true);
+    setStatus('Zdjęcie jest otwarte. Zamknij jego okno, aby ukończyć zadanie.', true);
     document.body.classList.add('guide-focus-photo-close');
     updatePhotoPopupLayout();
     const photoImage = document.querySelector('.leaflet-popup-content img');
@@ -1023,7 +1128,7 @@ function getSpokenStatus(message) {
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Otworzono popup ze zdjęciem');
   });
   document.addEventListener('geoportal:photo-closed', function () {
-    if (!card.hidden && currentStep === 3 && photoOpened) {
+    if (!card.hidden && currentStep === 4 && photoOpened) {
       document.body.classList.remove('guide-focus-photo-close');
       document.body.style.removeProperty('--guide-photo-popup-max-width');
       document.body.style.removeProperty('--guide-photo-popup-max-height');
@@ -1032,13 +1137,12 @@ function getSpokenStatus(message) {
     }
   });
   document.addEventListener('geoportal:photos-loaded', function (event) {
-    if (currentStep !== 3) return;
+    if (currentStep !== 4) return;
 
     clearPhotoTargets();
     if (card.hidden || completed) return;
     if (event.detail.hasPhotos) {
-      setLearning(steps[currentStep].learning, null);
-      setStatus('Zdjęcia z roku ' + event.detail.year + ' są dostępne. Kliknij pulsujący znacznik na mapie, a potem zamknij popup.', false);
+      setStatus('Zdjęcia z ' + event.detail.year + ' roku są dostępne. Kliknij pulsujący znacznik na mapie, aby otworzyć fotografię, a po obejrzeniu zamknij jej okno.', true);
       if (event.detail.locations && event.detail.locations.length) {
         schedulePhotoMapFocus(event.detail.locations);
       }
@@ -1052,18 +1156,13 @@ function getSpokenStatus(message) {
           return Math.abs(year - event.detail.year) < Math.abs(closest - event.detail.year) ? year : closest;
         })
         : null;
-      const alternativeHint = alternativeYear ? ' Na przykład wybierz ' + alternativeYear + ' r.' : '';
-      setStatus('Brak zdjęć dla roku ' + event.detail.year + '. Przesuń suwak na inny rok.' + alternativeHint, false);
-      setLearning('Zdjęcia są dostępne tylko w wybranych latach.' + alternativeHint, null);
+      const alternativeHint = alternativeYear ? ' Spróbuj wybrać na przykład rok ' + alternativeYear + '.' : '';
+      setStatus('Nie ma zdjęć z ' + event.detail.year + ' roku. Wybierz inny rok za pomocą suwaka.' + alternativeHint, true);
     }
   });
   document.addEventListener('geoportal:draw-created', function (event) {
-    if (card.hidden || currentStep !== 4 || drawnLayer) return;
+    if (card.hidden || currentStep !== 5 || drawnLayer) return;
     drawnLayer = event.detail.layer;
-    setLearning(
-      'Obiekt jest teraz osobną warstwą rysunków. Możesz go edytować lub usunąć bez zmiany mapy bazowej.',
-      'Obiekt dodano do warstwy rysunków. Ta warstwa pozwala zmieniać i usuwać własne oznaczenia bez modyfikowania mapy bazowej.'
-    );
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Narysowano obiekt: ' + event.detail.layerType);
     updateDrawAndExportProgress();
   });
@@ -1074,31 +1173,24 @@ function getSpokenStatus(message) {
   document.addEventListener('geoportal:draw-delete-stop', handleDrawDeleteStopped);
   document.addEventListener('geoportal:draw-edited', function (event) {
     if (activeDrawMode === 'edit' && event.detail.count > 0) drawModeCommitted = true;
-    if (card.hidden || currentStep !== 4 || event.detail.count < 1) return;
+    if (card.hidden || currentStep !== 5 || event.detail.count < 1) return;
     const guideObjectEdited = event.detail.layers.includes(drawnLayer);
     if (!guideObjectEdited) {
       setStatus('Edytuj obiekt narysowany w tym kroku.', true);
-      setLearning('Aby ćwiczenie zaliczyło edycję, zmień element narysowany przed chwilą.', null);
       focusDrawToolbar();
       return;
     }
     if (editedShape) return;
     editedShape = true;
-    setLearning('Zapis zatwierdził zmianę położenia lub kształtu obiektu. Teraz usuń ten sam element, aby sprawdzić kolejny tryb.', null);
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Edytowano obiekt');
     updateDrawAndExportProgress();
-    if (!completed) {
-      setStatus('Edycja zapisana. Teraz kliknij ikonę „Usuń obiekty”, wybierz obiekt do usunięcia i kliknij „Zapisz zmiany”.', true);
-      focusDrawToolbar();
-    }
   });
   document.addEventListener('geoportal:draw-deleted', function (event) {
     if (activeDrawMode === 'delete' && event.detail.count > 0) drawModeCommitted = true;
-    if (card.hidden || currentStep !== 4 || event.detail.count < 1) return;
+    if (card.hidden || currentStep !== 5 || event.detail.count < 1) return;
     const guideObjectDeleted = event.detail.layers.includes(drawnLayer);
     if (!guideObjectDeleted) {
       setStatus('Usuń ten sam obiekt, który edytowano.', true);
-      setLearning('Usuwanie innego obiektu nie kończy tego ćwiczenia. Wybierz ten, który przed chwilą edytowano.', null);
       focusDrawToolbar();
       return;
     }
@@ -1111,21 +1203,12 @@ function getSpokenStatus(message) {
     }
     if (deletedShape) return;
     deletedShape = true;
-    setLearning('Obiekt usunięto z warstwy rysunków, nie z map źródłowych. Eksport zapisuje bieżący widok jako obraz.', null);
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Usunięto obiekt');
     updateDrawAndExportProgress();
-    if (!completed) {
-      setStatus('Usunięto obiekt. Kliknij 🖨️, aby wyeksportować mapę.', true);
-      focusDrawToolbar();
-    }
   });
   document.addEventListener('geoportal:map-exported', function (event) {
-    if (card.hidden || currentStep !== 4 || exportCompleted) return;
+    if (card.hidden || currentStep !== 5 || exportCompleted) return;
     exportCompleted = true;
-    setLearning(
-      'Eksport zapisuje widoczne warstwy i aktualny zasięg mapy jako obraz. Dane źródłowe pozostają bez zmian.',
-      null
-    );
     logGuide('PRZEWODNIK_POSTĘP', steps[currentStep].title, 'Wyeksportowano obraz: ' + event.detail.filename);
     updateDrawAndExportProgress();
   });
@@ -1139,12 +1222,12 @@ function getSpokenStatus(message) {
     if (localStorage.getItem(storageKey) !== 'true') {
       autoStartTimer = window.setTimeout(function () {
         startGuide('pierwsze odwiedziny');
-      }, 700);
+      }, 1800);
     }
   } catch (error) {
     console.warn('Nie udało się odczytać stanu przewodnika; przewodnik uruchomi się automatycznie.', error);
     autoStartTimer = window.setTimeout(function () {
       startGuide('pierwsze odwiedziny');
-    }, 700);
+    }, 1800);
   }
 })();

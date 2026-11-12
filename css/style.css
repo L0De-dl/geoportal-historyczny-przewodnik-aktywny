@@ -270,9 +270,25 @@ body {
   filter: drop-shadow(0 0 5px #168b89);
 }
 
-.leaflet-draw-actions a.guide-focus,
+.leaflet-container.guide-focus {
+  position: relative;
+  z-index: 1101;
+  outline: 3px solid #168b89;
+  outline-offset: -3px;
+}
+
+.leaflet-control-zoom.guide-focus {
+  position: relative;
+  z-index: 1105;
+  outline: 3px solid #168b89;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px #fff;
+}
+
+.leaflet-draw a.guide-focus,
 .leaflet-draw-edit-edit.guide-focus,
-.leaflet-draw-edit-remove.guide-focus {
+.leaflet-draw-edit-remove.guide-focus,
+.print-button.guide-focus {
   position: relative;
   z-index: 1105;
   outline: 3px solid #168b89;
@@ -427,7 +443,7 @@ body.guide-focus-photo #map {
 }
 
 .guide-card h2 {
-  margin: 0 0 9px;
+  margin: 0 0 16px;
   color: #203238;
   font-size: 18px;
   line-height: 1.35;
@@ -438,6 +454,26 @@ body.guide-focus-photo #map {
   color: #58686e;
   font-size: 13px;
   line-height: 1.6;
+}
+
+.guide-instruction {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border: 1px solid #cfe5df;
+  border-radius: 8px;
+  background: #f1f8f6;
+  color: #344f49;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.guide-instruction strong {
+  color: #287c68;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
 }
 
 .guide-checklist {
@@ -502,28 +538,6 @@ body.guide-focus-photo #map {
   background: #32815a;
   color: #fff;
   content: "✓";
-}
-
-.guide-learning {
-  display: grid;
-  gap: 4px;
-  margin-top: 12px;
-  padding: 10px 11px;
-  border-left: 3px solid #43a885;
-  border-radius: 0 7px 7px 0;
-  background: #f0f7f5;
-  color: #405e58;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.guide-learning[hidden] {
-  display: none;
-}
-
-.guide-learning strong {
-  color: #287c68;
-  font-size: 11px;
 }
 
 .guide-status {
